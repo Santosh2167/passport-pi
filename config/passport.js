@@ -8,6 +8,17 @@ passport.use(new LocalStrategy(
 
   },
   (email, password, done) => {
+    try {
+      const user = await UserModel.findOne({ email });
 
-  }
+      if (!user || !user.verifyPasswordSync(password)) {
+        return done(null, false)
+      }
+
+      return done(null, user);
+    }
+
+  } catch (error) {
+  done(error);
+}
 ));
