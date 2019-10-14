@@ -33,18 +33,26 @@ function logout(req, res) {
   // res.redirect("/");
 
 
-  req.session.destroy(() => {
-    res.redirect("/");
-  })
+  // req.session.destroy(() => {
+  //   res.redirect("/");
+  // })
+
+  req.logout();
+  res.redirect("/");
 
 }
-async function create(req, res) {
+async function create(req, res, next) {
   //res.send(req.body);
   const user = await UserModel.create(req.body);
 
-  console.log("user", user);
-  req.session.user = user;
-  res.redirect("/dashboard");
+  req.login(user, (err) => {
+    if (err) {
+      return next(err)
+    }
+    res.redirect("/dashboard");
+  })
+
+
 }
 
 
